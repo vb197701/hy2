@@ -52,6 +52,7 @@ listen: :54321          # HY2工作端口 你自己修改
 tls:
   cert: /etc/ssl/private/bing.com.crt     # 证书文件路径
   key: /etc/ssl/private/bing.com.key      # 证书文件路径
+
 auth:
   type: password
   password: *************     # HY2密码 你自己修改
