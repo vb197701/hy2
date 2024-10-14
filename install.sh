@@ -202,14 +202,14 @@ echo
 echo -e "${yellow}配置 /etc/hysteria/config.yaml${none}"
 echo "----------------------------------------------------------------"
 cat >/etc/hysteria/config.yaml <<-EOF
-listen: :${port}
+listen: :${port}     # 工作端口
 
 tls:
-  cert: ${cert_dir}/${domain}.crt
-  key: ${cert_dir}/${domain}.key
+  cert: ${cert_dir}/${domain}.crt    # 证书路径
+  key: ${cert_dir}/${domain}.key     # 证书路径
 auth:
   type: password
-  password: ${pwd}
+  password: ${pwd}    # 密码
 
 ignoreClientBandwidth: true
 
