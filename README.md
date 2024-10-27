@@ -1,10 +1,15 @@
 # hy2
 Hy2 极简一键脚本
 
-## 一键执行方式
+## 一键执行
 
 ```
 bash <(curl -L https://github.com/crazypeace/hy2/raw/main/install.sh)
+```
+
+# Uninstall
+```
+bash <(curl -fsSL https://get.hy2.sh/) –remove
 ```
 
 ## 带参数执行方式
