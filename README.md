@@ -45,7 +45,7 @@ mkdir -p /etc/ssl/private/
 openssl req -x509 -nodes -newkey ec:<(openssl ecparam -name prime256v1) -keyout "/etc/ssl/private/bing.com.key" -out "/etc/ssl/private/bing.com.crt" -subj "/CN=bing.com" -days 36500
 ```   
 4. 给目录和证书设置权限  
-   这里粗暴了一点, 直接设置的777. 你想精细化呢, 就设置给官方脚本里service的用户nobody.
+   这里粗暴了一点, 直接设置的777. 你想精细化呢, 就设置给官方脚本里service的用户.
 ```
 chmod -R 777 "/etc/ssl/private"
 ```
