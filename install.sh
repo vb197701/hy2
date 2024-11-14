@@ -111,7 +111,7 @@ pause
 
 # 准备工作
 apt update
-apt install -y curl openssl qrencode net-tools
+apt install -y curl openssl qrencode net-tools lsof
 
 # Hy2官方脚本 安装最新版本
 echo
