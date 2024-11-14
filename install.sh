@@ -8,14 +8,13 @@ yellow='\e[93m'
 magenta='\e[95m'
 cyan='\e[96m'
 none='\e[0m'
-_red() { echo -e ${red}$*${none}; }
-_green() { echo -e ${green}$*${none}; }
-_yellow() { echo -e ${yellow}$*${none}; }
-_magenta() { echo -e ${magenta}$*${none}; }
-_cyan() { echo -e ${cyan}$*${none}; }
 
 error() {
     echo -e "\n${red} 输入错误! ${none}\n"
+}
+
+warn() {
+    echo -e "\n$yellow $1 $none\n"
 }
 
 pause() {
@@ -30,8 +29,23 @@ echo -e "可以去 ${cyan}https://github.com/crazypeace/hy2${none} 查看脚本�
 echo -e "有问题加群 ${cyan}https://t.me/+ISuvkzFGZPBhMzE1${none}"
 echo "----------------------------------------------------------------"
 
+# 本机 IP
+InFaces=($(ifconfig -s | awk '{print $1}' | grep -E '^(eth|ens|eno|esp|enp|venet|vif)'))  #找所有的网口
+
+for i in "${InFaces[@]}"; do  # 从网口循环获取IP
+    Public_IPv4=$(curl -4s --interface "$i" https://www.cloudflare.com/cdn-cgi/trace | grep -oP "ip=\K.*$")
+    Public_IPv6=$(curl -6s --interface "$i" https://www.cloudflare.com/cdn-cgi/trace | grep -oP "ip=\K.*$")
+
+    if [[ -n "$Public_IPv4" ]]; then  # 检查是否获取到IP地址
+        IPv4="$Public_IPv4"
+    fi
+    if [[ -n "$Public_IPv6" ]]; then  # 检查是否获取到IP地址            
+        IPv6="$Public_IPv6"
+    fi
+done
+
 # 通过IP, host, 时区, 生成UUID. 重装脚本不改变, 不改变节点信息, 方便个人使用
-uuidSeed=$(curl -sL https://www.cloudflare.com/cdn-cgi/trace | grep -oP 'ip=\K.*$')$(cat /proc/sys/kernel/hostname)$(cat /etc/timezone)
+uuidSeed=${IPv4}${IPv6}$(cat /proc/sys/kernel/hostname)$(cat /etc/timezone)
 default_uuid=$(curl -sL https://www.uuidtools.com/api/generate/v3/namespace/ns:dns/name/${uuidSeed} | grep -oP '[^-]{8}-[^-]{4}-[^-]{4}-[^-]{4}-[^-]{12}')
 
 # 如果你想使用纯随机的UUID
@@ -48,20 +62,23 @@ if [ $# -ge 1 ]; then
     case ${1} in
     4)
         netstack=4
-        ip=$(curl -4s https://www.cloudflare.com/cdn-cgi/trace | grep -oP 'ip=\K.*$')
+        ip=${IPv4}
         ;;
     6)
         netstack=6
-        ip=$(curl -6s https://www.cloudflare.com/cdn-cgi/trace | grep -oP 'ip=\K.*$')
-        ;;    
+        ip=${IPv6}
+        ;;
     *) # initial
-        ip=$(curl -s https://www.cloudflare.com/cdn-cgi/trace | grep -oP 'ip=\K.*$')
-        if [[ -z $(echo -n ${ip} | sed -E 's/([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})//g') ]]; then
-          netstack=4
+        if [[ -n "$IPv4" ]]; then  # 检查是否获取到IP地址
+            netstack=4
+            ip=${IPv4}
+        elif [[ -n "$IPv6" ]]; then  # 检查是否获取到IP地址            
+            netstack=6
+            ip=${IPv6}
         else
-          netstack=6
+            warn "没有获取到公共IP"
         fi
-        ;;    
+        ;;
     esac
 
     # 第2个参数是port
@@ -116,32 +133,20 @@ if [[ -z $netstack ]]; then
   echo "如果你不懂这段话是什么意思, 请直接回车"
   read -p "$(echo -e "Input ${cyan}4${none} for IPv4, ${cyan}6${none} for IPv6:") " netstack
 
-  # 本机IP
-  InFaces=($(ifconfig -s | awk '{print $1}' | grep -E '^(eth|ens|eno|esp|enp|venet|vif)'))  #找所有的网口
-
-  for i in "${InFaces[@]}"; do  # 从网口循环获取IP
-    Public_IPv4=$(curl -4s --interface "$i" https://www.cloudflare.com/cdn-cgi/trace | grep -oP "ip=\K.*$")
-    Public_IPv6=$(curl -6s --interface "$i" https://www.cloudflare.com/cdn-cgi/trace | grep -oP "ip=\K.*$")
-
-    if [[ -n "$Public_IPv4" || -n "$Public_IPv6" ]]; then  # 检查是否获取到IP地址
-      IPv4="$Public_IPv4"
-      IPv6="$Public_IPv6"
-      break  # 获取到任一IP类型停止循环
-    fi
-  done
-
   if [[ $netstack == "4" ]]; then
-    ip=$IPv4
+    ip=${IPv4}
   elif [[ $netstack == "6" ]]; then
-    ip=$IPv6
+    ip=${IPv6}
   else
-    if [[ -n "$IPv4" ]]; then
-      ip=$IPv4
-      netstack=4
-    elif [[ -n "$IPv6" ]]; then
-      ip=$IPv6
-      netstack=6
-    fi
+    if [[ -n "$IPv4" ]]; then  # 检查是否获取到IP地址
+        netstack=4
+        ip=${IPv4}
+    elif [[ -n "$IPv6" ]]; then  # 检查是否获取到IP地址            
+        netstack=6
+        ip=${IPv6}
+    else
+        warn "没有获取到公共IP"
+    fi    
   fi
 fi
 
