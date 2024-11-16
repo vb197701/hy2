@@ -200,6 +200,8 @@ if [[ -z $pwd ]]; then
 fi
 
 # 生成证书
+echo -e "${yellow}生成证书 ${cert_dir}/ ${none}"
+echo "----------------------------------------------------------------"
 cert_dir="/etc/ssl/private"
 mkdir -p ${cert_dir}
 openssl req -x509 -nodes -newkey ec:<(openssl ecparam -name prime256v1) -keyout "${cert_dir}/${domain}.key" -out "${cert_dir}/${domain}.crt" -subj "/CN=${domain}" -days 36500
