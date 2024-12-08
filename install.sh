@@ -256,6 +256,11 @@ echo -e "$yellow 传输层安全 (TLS) = ${cyan}tls${none}"
 echo -e "$yellow 应用层协议协商 (Alpn) = ${cyan}h3${none}"
 echo -e "$yellow 跳过证书验证 (allowInsecure) = ${cyan}true${none}"
 echo
+
+# 如果是 IPv6 那么在生成节点分享链接时, 要用[]把IP包起来
+if [[ $netstack == "6" ]]; then
+    ip="[${ip}]"
+fi
 echo "---------- 链接 URL ----------"
 hy2_url="hysteria2://${pwd}@${ip}:${port}?alpn=h3&insecure=1#HY2_${ip}"
 echo -e "${cyan}${hy2_url}${none}"
