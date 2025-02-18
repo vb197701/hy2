@@ -67,5 +67,5 @@ ignoreClientBandwidth: true
 
 启用 service  
 ```
-systemctl enable v2ray; systemctl start v2ray
+systemctl enable hysteria-server; systemctl start hysteria-server
 ```
