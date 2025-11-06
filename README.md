@@ -6,9 +6,13 @@ Hy2 极简一键脚本
 你如果不放心开源的脚本，你可以自己执行那6行有效语句，再修改配置文件中的4行，也能达到一样的效果。
 
 ## 一键执行
+```
+apt update
+apt install -y curl
+```
 
 ```
-bash <(curl -L https://github.com/crazypeace/hy2/raw/main/install.sh || wget -O- $_)
+bash <(curl -L https://github.com/crazypeace/hy2/raw/main/install.sh)
 ```
 
 # Uninstall
