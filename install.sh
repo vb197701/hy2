@@ -30,6 +30,9 @@ echo -e "有问题加群 ${cyan}https://t.me/+q5WPfGjtwukyZjhl${none}"
 echo -e "本脚本支持带参数执行, 省略交互过程, 详见GitHub."
 echo "----------------------------------------------------------------"
 
+# 确保有 curl 和 wget
+apt install -y curl wget
+
 # 本机 IP
 InFaces=($(ls /sys/class/net/ | grep -E '^(eth|ens|eno|esp|enp|venet|vif)'))  #找所有的网口
 
@@ -113,7 +116,7 @@ pause
 
 # 准备工作
 apt update
-apt install -y curl openssl qrencode net-tools lsof
+apt install -y openssl qrencode net-tools lsof
 
 # Hy2官方脚本 安装最新版本
 echo
