@@ -31,7 +31,7 @@ echo -e "本脚本支持带参数执行, 省略交互过程, 详见GitHub."
 echo "----------------------------------------------------------------"
 
 # 确保有 curl 和 wget
-apt install -y curl wget
+apt-get -y install curl wget -qq
 
 # 本机 IP
 InFaces=($(ls /sys/class/net/ | grep -E '^(eth|ens|eno|esp|enp|venet|vif)'))  #找所有的网口
