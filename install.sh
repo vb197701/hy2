@@ -210,6 +210,9 @@ mkdir -p ${cert_dir}
 openssl req -x509 -nodes -newkey ec:<(openssl ecparam -name prime256v1) -keyout "${cert_dir}/${domain}.key" -out "${cert_dir}/${domain}.crt" -subj "/CN=${domain}" -days 36500
 chmod -R 777 ${cert_dir}
 
+# 生成 pinSHA256
+pinsha256_cert=$(openssl x509 -in "${cert_dir}/${domain}.crt" -outform DER | sha256sum | awk '{print $1}')
+
 # 配置 /etc/hysteria/config.yaml
 echo
 echo -e "${yellow}配置 /etc/hysteria/config.yaml${none}"
@@ -265,7 +268,7 @@ if [[ $netstack == "6" ]]; then
     ip="[${ip}]"
 fi
 echo "---------- 链接 URL ----------"
-hy2_url="hysteria2://${pwd}@${ip}:${port}?alpn=h3&insecure=1#HY2_${ip}"
+hy2_url="hysteria2://${pwd}@${ip}:${port}?alpn=h3&insecure=1&pinSHA256=${pinsha256_cert}#HY2_${ip}"
 echo -e "${cyan}${hy2_url}${none}"
 echo
 sleep 3
