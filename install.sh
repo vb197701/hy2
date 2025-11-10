@@ -203,7 +203,7 @@ if [[ -z $pwd ]]; then
 fi
 
 # 生成证书
-echo -e "${yellow}生成证书 ${cert_dir}/ ${none}"
+echo -e "${yellow}生成证书${none}"
 echo "----------------------------------------------------------------"
 cert_dir="/etc/ssl/private"
 mkdir -p ${cert_dir}
